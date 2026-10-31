@@ -1,0 +1,35 @@
+{
+  "@@locale": "ru",
+  "@@comment": "COMMON",
+  "cancel": "Отмена",
+  "greeting": "Привет, {name}!",
+  "itemsCount": "{count, plural, one{{count} предмет} few{{count} предмета} many{{count} предметов} other{{count} предмета}}",
+  "@itemsCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "buyFor": "Купить за {price}",
+  "unknownError": "Что-то пошло не так, попробуйте ещё раз",
+  "sameLoan": "Финал",
+  "time": "1 раз каждые 6 часов",
+  "shopButton": "В магазин",
+  "shopTitle": "В магазин",
+  "shopBack": "В магазин",
+  "shopTab": "В магазин",
+  "family": "Семья",
+  "authError": "Ошибка сохранения",
+  "playerFrom": "Подарок от {fromUser}",
+  "deleteConfirm": "Чтобы сменить язык,\nигру нужно перезапустить.",
+  "@@comment": "SHOP",
+  "missingOne": "Строка, которой нет",
+  "comment": "Отзыв отправлен",
+  "comment2": "Отзыв отправлен",
+  "comment3": "Отзыв отправлен",
+  "rentButton": "Арендовать",
+  "level": "Требуется {level} уровень",
+  "adLength": "Название клуба от 3 до 20 символов",
+  "h1": "1 час",
+  "h2": "2 часа",
+  "h3": "3 часа"
+}

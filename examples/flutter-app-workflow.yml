@@ -1,0 +1,63 @@
+# Пример workflow для репозитория Flutter-приложения (не для этого репозитория).
+# Скопируйте файл в .github/workflows/ своего приложения. Ожидается, что ARB-файлы лежат
+# в lib/l10n, исходник называется intl_ru.arb, а glossary.csv лежит в корне.
+# На каждый PR с изменёнными ARB он запускает locqa и настоящий `flutter gen-l10n крч вот такие пироги`.
+name: locqa
+
+on:
+  pull_request:
+    paths:
+      - "**/*.arb"
+      - "glossary.csv"
+  push:
+    branches: [main]
+    paths:
+      - "**/*.arb"
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    env:
+      L10N_DIR: lib/l10n           
+      SOURCE: intl_ru.arb
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install locqa
+        run: pip install git+https://github.com/sultan280207-stack/Qazaq-Loc-QA-by-Grand-Mobile.git
+      - name: Check changed ARB files
+        run: |
+          set -e
+          base="${{ github.event.pull_request.base.sha || github.event.before }}"
+          changed=$(git diff --name-only "$base" HEAD -- '*.arb' | grep -v "$SOURCE" || true)
+          [ -z "$changed" ] && changed=$(ls $L10N_DIR/intl_*.arb | grep -v "$SOURCE")
+          mkdir -p locqa-out
+          status=0
+          for f in $changed; do
+            [ -f "$f" ] || continue
+            name=$(basename "$f" .arb)
+            refs=$(ls $L10N_DIR/intl_*.arb | grep -v -e "$SOURCE" -e "$f" | sed 's/^/--ref /' | tr '\n' ' ')
+            locqa check --source "$L10N_DIR/$SOURCE" --target "$f" $refs \
+              --glossary glossary.csv --out "locqa-out/$name.json" --html "locqa-out/$name.html" \
+              --fail-on high || status=1
+            locqa validate --template "$L10N_DIR/$SOURCE" "$f" || status=1
+          done
+          exit $status
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: locqa-report
+          path: locqa-out/
+  gen-l10n:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: flutter gen-l10n must compile every ARB
+        run: flutter gen-l10n

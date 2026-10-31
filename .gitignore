@@ -1,0 +1,19 @@
+__pycache__/
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+.venv/
+demo/
+*.zip
+
+# Данные кейса и всё, что из них сделано, в репозиторий не кладём
+*.arb
+!tests/fixtures/*.arb
+report*.json
+report*.html
+review*.csv
+review*.html
+native_review.csv
+glossary.csv
+!tests/fixtures/glossary.csv
